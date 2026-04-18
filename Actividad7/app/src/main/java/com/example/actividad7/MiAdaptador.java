@@ -1,40 +1,51 @@
-package com.example.clase7;
+package com.example.actividad7;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.recyclerview.widget.RecyclerView;
+import java.util.ArrayList;
+
+// <-- IMPORTA GLIDE
+import com.bumptech.glide.Glide;
 
 public class MiAdaptador extends RecyclerView.Adapter<MiViewHolder> {
 
-    private String[] localDataSet;
+    private ArrayList<Personaje> localDataSet;
 
-    public MiAdaptador(String[] dataSet) {
+    public MiAdaptador(ArrayList<Personaje> dataSet) {
         localDataSet = dataSet;
     }
 
-    // Create new views (invoked by the layout manager)
     @Override
     public MiViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        // Create a new view, which defines the UI of the list item
         View view = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.text_row_item, viewGroup, false);
-
         return new MiViewHolder(view);
     }
 
-    // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(MiViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(MiViewHolder viewHolder, int position) {
+        Personaje p = localDataSet.get(position);
 
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
-        viewHolder.getTextView().setText(localDataSet[position]);
+        // 1. Pones el texto (esto ya lo tenías)
+        viewHolder.getTextView().setText(p.getName());
+
+        // 2. Aquí "jalas" la imagen del server usando Glide
+        String urlImagen = p.getPhoto();
+
+        Glide.with(viewHolder.itemView.getContext())
+                .load(urlImagen)
+                .into(viewHolder.getImageView());
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return localDataSet.length;
+        return localDataSet.size();
+    }
+
+    public void addElemento(Personaje newElement) {
+        localDataSet.add(newElement);
+        notifyItemInserted(localDataSet.size() - 1);
     }
 }
